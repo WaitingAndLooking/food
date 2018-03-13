@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver">
+		</property>
+		<property name="url" value="jdbc:mysql://localhost:3306/db_meituan?useUnicode=true&amp;characterEncoding=utf-8">
+		</property>
+		<property name="username" value="root"></property>
+		<property name="password" value="123"></property>
+	</bean>
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource">
+			<ref bean="dataSource" />
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">
+					org.hibernate.dialect.MySQLDialect
+				</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+		<property name="mappingResources">
+			<list>
+				<value>com/user/entity/User.hbm.xml</value>
+				<value>com/user/entity/TbRestaurant.hbm.xml</value>
+				<value>com/user/entity/TbComment.hbm.xml</value>
+				<value>com/user/entity/TbFood.hbm.xml</value>
+				<value>com/user/entity/TbType.hbm.xml</value>
+				<value>com/user/entity/Restaurant.hbm.xml</value>
+				<value>com/user/entity/Food.hbm.xml</value>
+				<value>com/user/entity/Comment.hbm.xml</value>
+				<value>com/user/entity/Type.hbm.xml</value>
+				<value>com/user/entity/Order.hbm.xml</value></list>
+		</property>
+	</bean>
+	
+	<!-- action调用service，service调用dao,dao调用sessionFactory -->
+
+	<!--              一、用户表                 -->
+
+
+	<!-- dao调用sessionFactory,其中dao所在类要有sessionFactory,并且有set注入 -->
+	<!-- dao被Service引用 -->
+	<bean id="userdao" class="com.dao.UserDAOImp">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory"></ref>
+		</property>
+	</bean>
+
+	<!-- service调用dao -->
+	<bean id="userservice" class="com.service.UserServiceImp">
+		<property name="userdao">
+			<ref bean="userdao"></ref>
+		</property>
+	</bean>
+
+	<!-- action调用service -->
+	<bean id="usercontrol" class="com.control.UserAction">
+		<property name="userservice">
+			<ref bean="userservice"></ref>
+		</property>
+		<property name="pagebean">
+			<ref bean="pagebean"/>
+		</property>
+	</bean>
+	
+	<!-- user分页 -->
+	<bean id="pagebean" class="com.page.PageBean">
+		<property name="userservice">
+			<ref bean="userservice"/>
+		</property>
+	</bean>
+	
+	
+	<!--                二、餐厅表 -->
+	<bean id="resdao" class="com.dao.ResDAOImp">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory"></ref>
+		</property>
+	</bean>
+	
+	<bean id="resservice" class="com.service.ResServiceImp">
+		<property name="resdao">
+			<ref bean="resdao"/>
+		</property>
+	</bean>
+	
+	<bean id="rescontrol" class="com.control.Resaction">
+		<property name="resservice">
+			<ref bean="resservice"></ref>
+		</property>
+		<property name="rpagebean">
+			<ref bean="rpagebean"></ref>
+		</property>
+		<property name="userservice">
+			<ref bean="userservice"></ref>
+		</property>
+	</bean>
+	
+	<bean id="rpagebean" class="com.page.RPageBean">
+		<property name="resservice">
+			<ref bean="resservice"></ref>
+		</property>
+	</bean>
+	
+	
+	<!--                三、食物表 -->
+	<bean id="foodcontrol" class="com.control.Foodaction">
+		<property name="foodservice">
+			<ref bean="foodservice"/>
+		</property>
+		<property name="fpagebean">
+			<ref bean="fpagebean"></ref>
+		</property>
+		<property name="typeservice">
+			<ref bean="typeservice"></ref>
+		</property>
+		<property name="resservice">
+			<ref bean="resservice"></ref>
+		</property>
+	</bean>
+	
+	<bean name="fooddao" class="com.dao.FoodDAOImp">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory"/>
+		</property>
+	</bean>
+	
+	<bean name="foodservice" class="com.service.FoodServiceImp">
+		<property name="fooddao">
+			<ref bean="fooddao"/>
+		</property>
+	</bean>
+	
+	<bean name="fpagebean" class="com.page.FPageBean">
+		<property name="foodservice">
+			<ref bean="foodservice"></ref>
+		</property>
+	</bean>
+	
+	<!--                四、评论表 -->
+	<bean name="comcontrol" class="com.control.Commentaction">
+		<property name="comservice">
+			<ref bean="comservice"/>
+		</property>
+		
+		<property name="cpagebean">
+			<ref bean="cpagebean"></ref>
+		</property>
+		<property name="resservice">
+			<ref bean="resservice"></ref>
+		</property>
+		<property name="userservice">
+			<ref bean="userservice"></ref>
+		</property>
+	</bean>
+	
+	<bean name="comdao" class="com.dao.CommentDAOImp">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory"/>
+		</property>
+	</bean>
+	
+	<bean name="comservice" class="com.service.CommentServiceImp">
+		<property name="comdao">
+			<ref bean="comdao"/>
+		</property>
+	</bean>
+	
+	<bean name="cpagebean" class="com.page.CPageBean">
+		<property name="comservice">
+			<ref bean="comservice"/>
+		</property>
+	</bean>
+	
+	<!--                五、类型表 -->
+	<bean name="typecontrol" class="com.control.Typeaction">
+		<property name="typeservice">
+			<ref bean="typeservice"></ref>
+		</property>
+		<property name="tpagebean">
+			<ref bean="tpagebean"></ref>
+		</property>
+		<property name="resservice">
+			<ref bean="resservice"></ref>
+		</property>
+	</bean>
+	
+	<bean name="typeservice" class="com.service.TypeServiceImp">
+		<property name="typedao">
+			<ref bean="typedao"></ref>
+		</property>
+	</bean>
+	
+	<bean name="typedao" class="com.dao.TypeDAOImp">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory"/>
+		</property>
+	</bean>
+	
+	<bean name="tpagebean" class="com.page.TPageBean">
+		<property name="typeservice">
+			<ref bean="typeservice"></ref>
+		</property>
+	</bean>
+	
+	<!--                六、订单表 -->
+	<bean name="orderdao" class="com.dao.OrderDAOImp">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory"></ref>
+		</property>
+	</bean>
+	
+	<bean name="orderservice" class="com.service.OrderServiceImp">
+		<property name="orderdao">
+			<ref bean="orderdao"></ref>
+		</property>
+	</bean>
+	
+	<bean name="ordercontrol" class="com.control.Orderaction">
+		<property name="orderservice">
+			<ref bean="orderservice"></ref>
+		</property>
+		<property name="opagebean">
+			<ref bean="opagebean"></ref>
+		</property>
+		<property name="userservice">
+			<ref bean="userservice"/>
+		</property>
+	</bean>
+	
+	<bean name="opagebean" class="com.page.OPageBean">
+		<property name="orderservice">
+			<ref bean="orderservice"></ref>
+		</property>
+	</bean>
+	
+		<!--                七、购物车 -->
+		<bean name="cart" class="com.cart.Cart">
+			<property name="fooddao">
+			<ref bean="fooddao"></ref>
+			</property>
+		</bean>
+		
+		<bean name="cartcontrol" class="com.control.Cartaction">
+			<property name="foodservice">
+				<ref bean="foodservice"></ref>
+			</property>
+			<property name="cart">
+				<ref bean="cart"></ref>
+			</property>
+		</bean>
+	
+</beans>

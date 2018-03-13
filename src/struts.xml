@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+	<constant name="struts.i18n.encoding" value="utf-8">
+	</constant>
+	<package name="default" extends="struts-default">
+		<!-- 配置测试Action -->
+		<action name="useraction" class="usercontrol"><!-- 在此引用action -->
+			<result name="success" type="redirect">/muban/index1.jsp</result>
+			<result name="showall">/user/showall.jsp</result>
+			<result name="add">/user/add.jsp</result>
+			<result name="error">/user/error.jsp</result>
+			<result name="update">/user/update.jsp</result>
+			<result name="dianpu" type="redirect">/muban/index2.jsp</result>
+			<result name="qianduan" type="redirect">/front/index.jsp</result>
+			<result name="register">/user/login.jsp</result>
+			<result name="user"  type="redirect">/front/user.jsp</result>
+		</action>
+		
+		<action name="resaction" class="rescontrol">
+			<result name="showall">/res/showall.jsp</result>
+			<result name="add">/res/add.jsp</result>
+			<result name="error">/res/error.jsp</result>
+			<result name="update">/res/update.jsp</result>
+			<result name="showres">/dianzhu/showres.jsp</result>
+			<result name="dzupdate">/dianzhu/dzupdate.jsp</result>
+		</action>
+		
+		<action name="foodaction" class="foodcontrol">
+		 <interceptor-ref name="fileUpload">
+               <param name="allowedTypes">
+                   image/bmp,image/png,image/jpeg,image/jpg,image/x-png,image/pjpeg
+               </param>
+               <param name="maximumSize">10240000</param> 
+          </interceptor-ref>
+          <interceptor-ref name="defaultStack" />
+          <result name="add" type="redirect">/food/add.jsp</result>
+          <param name="savePath">/food/add</param>
+		  
+			
+			<result name="addfood" type="redirect">/dianzhu/addfood.jsp</result>
+			
+			<result name="showall">/food/showall.jsp</result>
+			<result name="error">/food/error.jsp</result>
+			<result name="update"  type="redirect">/food/update.jsp</result>
+			<result name="showfood">/dianzhu/showfood.jsp</result>
+			<result name="dzupdate" type="redirect">/dianzhu/fupdate.jsp</result>
+			<result name="fnull">/dianzhu/fnull.jsp</result>
+			<result name="cart">/front/cart.jsp</result>
+		</action>
+		
+		<action name="comaction" class="comcontrol">
+			<result name="showall">/comment/showall.jsp</result>
+			<result name="add">/comment/add.jsp</result>
+			<result name="error">/comment/error.jsp</result>
+			<result name="update">/comment/update.jsp</result>
+			<result name="qdshowall" type="redirect">/front/contact.jsp</result>
+		</action>
+		
+		<action name="typeaction" class="typecontrol">
+			<result name="showall">/type/showall.jsp</result>
+			<result name="add">/type/add.jsp</result>
+			<result name="error">/type/error.jsp</result>
+			<result name="update">/type/update.jsp</result>
+			<result name="fadd"  type="redirect">/food/add.jsp</result>
+			<result name="dzfadd"  type="redirect">/dianzhu/addfood.jsp</result>
+		</action>
+		
+		<action name="orderaction" class="ordercontrol">
+			<result name="showall">/order/showall.jsp</result>
+			<result name="dzshowall">/dianzhu/showorder.jsp</result>
+			<result name="null">/dianzhu/onull.jsp</result>
+			<result name="order" type="redirect">/front/order.jsp</result>
+			<result name="onull" type="redirect">/front/onull.jsp</result>
+		</action>
+		
+		<action name="cartaction" class="cartcontrol">
+			<result name="cart"  type="redirect">/front/cart.jsp</result>
+		</action>
+	</package>
+</struts>    
